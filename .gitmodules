@@ -1,0 +1,3 @@
+[submodule "PaperMarioTools/Libraries/BfresLibrary"]
+	path = PaperMarioTools/Libraries/BfresLibrary
+	url = https://github.com/KillzXGaming/BfresLibrary

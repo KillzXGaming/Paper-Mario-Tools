@@ -1,0 +1,4 @@
+[submodule "BfresLibrary"]
+	path = Libraries/BfresLibrary
+	url = https://github.com/KillzXGaming/BfresLibrary
+	branch = master
