@@ -1,9 +1,7 @@
 ﻿using BfresLibrary;
 using BfresLibrary.Helpers;
 using BfresLibrary.Switch;
-using BfresLibrary;
 using ZstdSharp;
-using System.Xml.Linq;
 
 namespace LightConverter
 {
