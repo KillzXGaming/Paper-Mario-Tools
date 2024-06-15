@@ -1,7 +1,6 @@
 ﻿using BfresLibrary;
-using BfresLibrary.Helpers;
-using BfresLibrary.Switch;
-using ZstdSharp;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace LightConverter
 {
@@ -18,11 +17,15 @@ namespace LightConverter
                 else if (arg.EndsWith("light.bfres"))
                     Dump(new ResFile(arg));
                 else if (arg.EndsWith("probe.header.json"))
-                    CreatProbeHeader(arg);
+                    CreateProbeHeader(arg);
                 else if (arg.EndsWith("probe.header.zst"))
                     Dump(new ProbeHeader(Zstd.Decompress(arg)), arg);
                 else if (arg.EndsWith("probe.header"))
                     Dump(new ProbeHeader(File.OpenRead(arg)), arg);
+                else if (arg.EndsWith(".data"))
+                    Dump(new RenderParams(File.OpenRead(arg)), arg);
+                else if (arg.EndsWith("render_params.json"))
+                    CreateRenderParams(arg);
             }
         }
 
@@ -43,7 +46,29 @@ namespace LightConverter
             header.Export($"{name}.json");
         }
 
-        static void CreatProbeHeader(string arg)
+        static void Dump(RenderParams renderParams, string arg)
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.Converters.Add(new Vector3Converter());
+            settings.Converters.Add(new Vector4Converter());
+            settings.Converters.Add(new VectorConverter());
+
+            string name = Path.GetFileNameWithoutExtension(arg);
+            File.WriteAllText($"{name}.json", JsonConvert.SerializeObject(renderParams, Formatting.Indented, settings));
+        }
+
+        static void CreateRenderParams(string arg)
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.Converters.Add(new Vector3Converter());
+            settings.Converters.Add(new Vector4Converter());
+            settings.Converters.Add(new VectorConverter());
+
+            var renderParams = JsonConvert.DeserializeObject<RenderParams>(File.ReadAllText(arg), settings);
+            renderParams.Save($"{arg.Replace(".json", ".data")}");
+        }
+
+        static void CreateProbeHeader(string arg)
         {
             var header = ProbeHeader.Create(arg);
             string name = Path.GetFileNameWithoutExtension(arg);
